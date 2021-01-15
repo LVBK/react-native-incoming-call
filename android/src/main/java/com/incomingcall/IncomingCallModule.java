@@ -33,6 +33,7 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
         super(context);
         reactContext = context;
         mainActivity = getCurrentActivity();
+        sInstance = this;
     }
 
     public static IncomingCallModule getInstance() {
