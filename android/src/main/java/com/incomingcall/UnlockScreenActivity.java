@@ -1,5 +1,6 @@
 package com.incomingcall;
 
+import android.app.KeyguardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -143,6 +144,11 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         sendEvent("answerCall", params);
 
         clearTimer();
+
+        KeyguardManager keyguardManager = (KeyguardManager)getSystemService(Activity.KEYGUARD_SERVICE);
+        KeyguardManager.KeyguardLock lock = keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
+        lock.disableKeyguard();
+        
         finish();
     }
 
