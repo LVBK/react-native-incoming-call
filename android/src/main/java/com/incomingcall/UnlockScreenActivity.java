@@ -7,23 +7,13 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View;
-import android.net.Uri;
-import android.os.Vibrator;
-import android.content.Context;
-import android.media.MediaPlayer;
-import android.provider.Settings;
-import java.util.List;
 import android.app.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningAppProcessInfo;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import com.squareup.picasso.Picasso;
@@ -36,9 +26,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
     private ImageView ivAvatar;
     private String uuid = "";
     static boolean active = false;
-    private static Vibrator v = (Vibrator) IncomingCallModule.reactContext.getSystemService(Context.VIBRATOR_SERVICE);
     private long[] pattern = {0, 1000, 800};
-    private static MediaPlayer player = MediaPlayer.create(IncomingCallModule.reactContext, Settings.System.DEFAULT_RINGTONE_URI);
     private static Activity fa;
 
     @Override
@@ -89,16 +77,14 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 
-        v.vibrate(pattern, 0);
-        player.start();
+        startRingtone();
 
         AnimateImage acceptCallBtn = findViewById(R.id.ivAcceptCall);
         acceptCallBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    v.cancel();
-                    player.stop();
+                    stopRingtone();
                     acceptDialing();
                 } catch (Exception e) {
                     WritableMap params = Arguments.createMap();
@@ -113,8 +99,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         rejectCallBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                v.cancel();
-                player.stop();
+                stopRingtone();
                 dismissDialing();
             }
         });
@@ -127,9 +112,24 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
     }
 
     public static void dismissIncoming() {
-        v.cancel();
-        player.stop();
+        stopRingtone();
         fa.finish();
+    }
+
+    private void startRingtone() {
+        Intent service = new Intent(IncomingCallModule.reactContext, RingtoneControllerHeadlessService.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("type", "startRingtone");
+        service.putExtras(bundle);
+        IncomingCallModule.reactContext.startService(service);
+    }
+
+    private static void stopRingtone() {
+        Intent service = new Intent(IncomingCallModule.reactContext, RingtoneControllerHeadlessService.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("type", "stopRingtone");
+        service.putExtras(bundle);
+        IncomingCallModule.reactContext.startService(service);
     }
 
     private void acceptDialing() {
