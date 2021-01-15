@@ -58,9 +58,7 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
             bundle.putString("info", info);
             Intent i = new Intent(reactContext, UnlockScreenActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            i.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED +
-            WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD +
-            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+            i.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
             
             i.putExtras(bundle);
             reactContext.startActivity(i);
