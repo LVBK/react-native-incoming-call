@@ -3,6 +3,7 @@ package com.incomingcall;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Handler;
 import android.view.WindowManager;
 import android.content.Context;
 import android.util.Log;
@@ -57,13 +58,21 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
             reactContext.startActivity(i);
 
             if (timeout > 0) {
-                new Timer().schedule(new TimerTask() {          
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         // this code will be executed after timeout seconds
                         UnlockScreenActivity.dismissIncoming();
                     }
                 }, timeout);
+//                new Timer().schedule(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        // this code will be executed after timeout seconds
+//                        UnlockScreenActivity.dismissIncoming();
+//                    }
+//                }, timeout);
             }
         }
     }
