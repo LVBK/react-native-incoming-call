@@ -7,13 +7,10 @@ import android.os.Handler;
 import android.view.WindowManager;
 import android.content.Context;
 import android.util.Log;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
@@ -142,6 +139,8 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
             this.headlessExtras = response;
 
             getReactApplicationContext().startActivity(focusIntent);
+            getReactApplicationContext().getCurrentActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         }
     }
 
