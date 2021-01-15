@@ -25,6 +25,8 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
 
     private static final String TAG = "RNIC:IncomingCallModule";
     private WritableMap headlessExtras;
+    private Handler timeRhandler;
+    private Runnable runnable;
 
     public IncomingCallModule(ReactApplicationContext context) {
         super(context);
@@ -58,14 +60,15 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
             reactContext.startActivity(i);
 
             if (timeout > 0) {
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
+                timeRhandler = new Handler();
+                runnable = new Runnable() {
                     @Override
                     public void run() {
                         // this code will be executed after timeout seconds
                         UnlockScreenActivity.dismissIncoming();
                     }
-                }, timeout);
+                };
+                timeRhandler.postDelayed(runnable, timeout);
 //                new Timer().schedule(new TimerTask() {
 //                    @Override
 //                    public void run() {
@@ -82,7 +85,7 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
         // final Activity activity = reactContext.getCurrentActivity();
 
         // assert activity != null;
-
+        timeRhandler.removeCallbacks(runnable);
         UnlockScreenActivity.dismissIncoming();
 
         return;
