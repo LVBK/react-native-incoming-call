@@ -22,6 +22,7 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
 
     public static ReactApplicationContext reactContext;
     public static Activity mainActivity;
+    private static IncomingCallModule sInstance = null;
 
     private static final String TAG = "RNIC:IncomingCallModule";
     private WritableMap headlessExtras;
@@ -32,6 +33,10 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
         super(context);
         reactContext = context;
         mainActivity = getCurrentActivity();
+    }
+
+    public static IncomingCallModule getInstance() {
+        return sInstance;
     }
 
     @Override
@@ -80,12 +85,18 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
         }
     }
 
+    public void clearTimer() {
+        if(timeRhandler != null && runnable != null) {
+            timeRhandler.removeCallbacks(runnable);
+        }
+    }
+
     @ReactMethod
     public void dismiss() {
         // final Activity activity = reactContext.getCurrentActivity();
 
         // assert activity != null;
-        timeRhandler.removeCallbacks(runnable);
+        clearTimer();
         UnlockScreenActivity.dismissIncoming();
 
         return;

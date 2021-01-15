@@ -142,6 +142,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
 
         sendEvent("answerCall", params);
 
+        clearTimer();
         finish();
     }
 
@@ -154,8 +155,15 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         }
 
         sendEvent("endCall", params);
-
+        clearTimer();
         finish();
+    }
+
+    private void clearTimer() {
+        IncomingCallModule module = IncomingCallModule.getInstance();
+        if(module != null) {
+            module.clearTimer();
+        }
     }
 
     @Override
