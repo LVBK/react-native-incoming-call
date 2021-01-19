@@ -142,6 +142,8 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
             params.putBoolean("isHeadless", true);
         }
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+
         sendEvent("answerCall", params);
 
         clearTimer();
