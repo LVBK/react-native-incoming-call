@@ -91,6 +91,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
                     WritableMap params = Arguments.createMap();
                     params.putString("message", e.getMessage());
                     sendEvent("error", params);
+                    stopRingtone();
                     dismissDialing();
                 }
             }
@@ -144,10 +145,6 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         sendEvent("answerCall", params);
 
         clearTimer();
-
-        KeyguardManager keyguardManager = (KeyguardManager)getSystemService(Activity.KEYGUARD_SERVICE);
-        KeyguardManager.KeyguardLock lock = keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
-        lock.disableKeyguard();
         
         finish();
     }
