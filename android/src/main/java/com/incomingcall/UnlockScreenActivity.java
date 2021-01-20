@@ -1,8 +1,6 @@
 package com.incomingcall;
 
-import android.app.KeyguardManager;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
@@ -124,11 +122,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         Bundle bundle = new Bundle();
         bundle.putString("type", "startRingtone");
         service.putExtras(bundle);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            IncomingCallModule.reactContext.startForegroundService(service);
-        }else{
-            IncomingCallModule.reactContext.startService(service);
-        }
+        IncomingCallModule.reactContext.startService(service);
     }
 
     private static void stopRingtone() {
@@ -136,11 +130,7 @@ public class UnlockScreenActivity extends AppCompatActivity implements UnlockScr
         Bundle bundle = new Bundle();
         bundle.putString("type", "stopRingtone");
         service.putExtras(bundle);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            IncomingCallModule.reactContext.startForegroundService(service);
-        }else{
-            IncomingCallModule.reactContext.startService(service);
-        }
+        IncomingCallModule.reactContext.startService(service);
     }
 
     private void acceptDialing() {
