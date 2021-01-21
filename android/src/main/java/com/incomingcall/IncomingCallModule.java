@@ -1,5 +1,6 @@
 package com.incomingcall;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -17,11 +18,15 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.common.LifecycleState;
+
+import java.util.List;
 
 public class IncomingCallModule extends ReactContextBaseJavaModule {
 
@@ -63,9 +68,7 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void display(String uuid, String name, String avatar, String info, int timeout) {
-        Activity activity = getCurrentActivity();
-        boolean isOpened = activity != null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !isOpened) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !isAppInForeground(reactContext)) {
             NotificationManager notificationManager =
                     (NotificationManager) reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -201,5 +204,34 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
         }
 
         promise.resolve(null);
+    }
+
+    public static boolean isAppInForeground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager == null) return false;
+
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        if (appProcesses == null) return false;
+
+        final String packageName = context.getPackageName();
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (
+                    appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+                            && appProcess.processName.equals(packageName)
+            ) {
+                ReactContext reactContext;
+
+                try {
+                    reactContext = (ReactContext) context;
+                } catch (ClassCastException exception) {
+                    // Not react context so default to true
+                    return true;
+                }
+
+                return reactContext.getLifecycleState() == LifecycleState.RESUMED;
+            }
+        }
+
+        return false;
     }
 }
