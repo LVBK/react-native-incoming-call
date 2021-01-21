@@ -63,7 +63,9 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void display(String uuid, String name, String avatar, String info, int timeout) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        Activity activity = getCurrentActivity();
+        boolean isOpened = activity != null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !isOpened) {
             NotificationManager notificationManager =
                     (NotificationManager) reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
