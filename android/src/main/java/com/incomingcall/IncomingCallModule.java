@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.AudioAttributes;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
@@ -87,16 +88,41 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
                 notificationManager.createNotificationChannel(mChannel);
             }
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(reactContext, CHANNEL_ID);
+ //            builder.setSmallIcon(R.drawable.ic_ring)
+//                    .setContentTitle("App Name")
+//                    .setContentText("Content text")
+//                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                    .setCategory(NotificationCompat.CATEGORY_CALL)
+//                    .setFullScreenIntent(openScreen(NOTIFICATION_ID), true)
+//                    .setAutoCancel(true)
+//                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                    .setOngoing(true);
 
-            builder.setSmallIcon(R.drawable.ic_ring)
-                    .setContentTitle("App Name")
-                    .setContentText("Content text")
+//            NotificationCompat.Builder builder = new NotificationCompat.Builder(reactContext, CHANNEL_ID);
+
+//            Intent receiveCallAction = new Intent(reactContext, HeadsUpNotificationActionReceiver.class);
+//            receiveCallAction.putExtra("CALL_RESPONSE_ACTION_KEY", "CALL_RECEIVE_ACTION");
+//            receiveCallAction.putExtra(ConstantApp.FCM_DATA_KEY, data);
+//            receiveCallAction.setAction("RECEIVE_CALL");
+//
+//            Intent cancelCallAction = new Intent(reactContext, HeadsUpNotificationActionReceiver.class);
+//            cancelCallAction.putExtra("CALL_RESPONSE_ACTION_KEY", ConstantApp.CALL_CANCEL_ACTION);
+//            cancelCallAction.putExtra(ConstantApp.FCM_DATA_KEY, data);
+//            cancelCallAction.setAction("CANCEL_CALL");
+//
+//            PendingIntent receiveCallPendingIntent = PendingIntent.getBroadcast(reactContext, 1200, receiveCallAction, PendingIntent.FLAG_UPDATE_CURRENT);
+//            PendingIntent cancelCallPendingIntent = PendingIntent.getBroadcast(reactContext, 1201, cancelCallAction, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(reactContext, CHANNEL_ID)
+                    .setContentText(name)
+                    .setContentTitle("Incoming Video Call")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_CALL)
-                    .setFullScreenIntent(openScreen(NOTIFICATION_ID), true)
+                    .addAction(R.drawable.ic_accept_call, "Receive Call", openScreen(NOTIFICATION_ID))
+                    .addAction(R.drawable.ic_decline_call, "Cancel call", null)
                     .setAutoCancel(true)
-                    .setOngoing(true);
+//                    .setSound(Uri.parse("android.resource://" + reactContext.getApplicationContext().getPackageName() + "/" + R.r))
+                    .setFullScreenIntent(openScreen(NOTIFICATION_ID), true);
 
             Notification notification = builder.build();
             notificationManager.notify(NOTIFICATION_ID, notification);
