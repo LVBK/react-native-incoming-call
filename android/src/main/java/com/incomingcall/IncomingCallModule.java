@@ -88,21 +88,7 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
                 notificationManager.createNotificationChannel(mChannel);
             }
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(reactContext, CHANNEL_ID);
-            builder.setSmallIcon(R.drawable.ic_ring)
-                    .setContentTitle("App Name")
-                    .setContentText("Content text")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setCategory(NotificationCompat.CATEGORY_CALL)
-                    .setFullScreenIntent(openScreen(NOTIFICATION_ID), true)
-                    .setAutoCancel(true)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .addAction(R.drawable.ic_accept_call, "Receive Call", openScreen(NOTIFICATION_ID))
-                    .addAction(R.drawable.ic_decline_call, "Cancel call", openScreen(NOTIFICATION_ID))
-                    .setOngoing(true);
-
-
-//            Intent receiveCallAction = new Intent(reactContext, HeadsUpNotificationActionReceiver.class);
+            //            Intent receiveCallAction = new Intent(reactContext, HeadsUpNotificationActionReceiver.class);
 //            receiveCallAction.putExtra("CALL_RESPONSE_ACTION_KEY", "CALL_RECEIVE_ACTION");
 //            receiveCallAction.putExtra(ConstantApp.FCM_DATA_KEY, data);
 //            receiveCallAction.setAction("RECEIVE_CALL");
@@ -115,14 +101,29 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
 //            PendingIntent receiveCallPendingIntent = PendingIntent.getBroadcast(reactContext, 1200, receiveCallAction, PendingIntent.FLAG_UPDATE_CURRENT);
 //            PendingIntent cancelCallPendingIntent = PendingIntent.getBroadcast(reactContext, 1201, cancelCallAction, PendingIntent.FLAG_UPDATE_CURRENT);
 
-//            NotificationCompat.Builder builder = new NotificationCompat.Builder(reactContext, CHANNEL_ID)
-//                    .setContentText(name)
-//                    .setContentTitle("Incoming Video Call")
-//                    .setCategory(NotificationCompat.CATEGORY_CALL)
-//                    .addAction(R.drawable.ic_accept_call, "Receive Call", openScreen(NOTIFICATION_ID))
-//                    .addAction(R.drawable.ic_decline_call, "Cancel call", openScreen(NOTIFICATION_ID))
-//                    .setAutoCancel(true)
-//                    .setFullScreenIntent(openScreen(NOTIFICATION_ID), true);
+            Bundle bundle = new Bundle();
+            bundle.putString("uuid", uuid);
+            bundle.putString("name", name);
+            bundle.putString("avatar", avatar);
+            bundle.putString("info", info);
+            Intent fullScreenIntent = new Intent(reactContext, UnlockScreenActivity.class);
+            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            fullScreenIntent.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+            fullScreenIntent.putExtra(NOTIFICATION_IDS, NOTIFICATION_ID);
+            fullScreenIntent.putExtras(bundle);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(reactContext, CHANNEL_ID);
+            builder.setSmallIcon(R.drawable.ic_ring)
+                    .setContentTitle(name)
+                    .setContentText("Incoming video call")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_CALL)
+                    .setFullScreenIntent(PendingIntent.getActivity(reactContext, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT), true)
+                    .setAutoCancel(true)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .addAction(R.drawable.ic_accept_call, "Receive Call", openScreen(NOTIFICATION_ID))
+                    .addAction(R.drawable.ic_decline_call, "Cancel call", openScreen(NOTIFICATION_ID))
+                    .setOngoing(true);
 
             Notification notification = builder.build();
             notificationManager.notify(NOTIFICATION_ID, notification);
