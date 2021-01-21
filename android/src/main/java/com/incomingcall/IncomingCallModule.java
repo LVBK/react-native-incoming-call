@@ -88,7 +88,8 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
                 notificationManager.createNotificationChannel(mChannel);
             }
 
- //            builder.setSmallIcon(R.drawable.ic_ring)
+//            NotificationCompat.Builder builder = new NotificationCompat.Builder(reactContext, CHANNEL_ID);
+            //            builder.setSmallIcon(R.drawable.ic_ring)
 //                    .setContentTitle("App Name")
 //                    .setContentText("Content text")
 //                    .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -98,7 +99,6 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
 //                    .setPriority(NotificationCompat.PRIORITY_HIGH)
 //                    .setOngoing(true);
 
-//            NotificationCompat.Builder builder = new NotificationCompat.Builder(reactContext, CHANNEL_ID);
 
 //            Intent receiveCallAction = new Intent(reactContext, HeadsUpNotificationActionReceiver.class);
 //            receiveCallAction.putExtra("CALL_RESPONSE_ACTION_KEY", "CALL_RECEIVE_ACTION");
@@ -116,10 +116,9 @@ public class IncomingCallModule extends ReactContextBaseJavaModule {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(reactContext, CHANNEL_ID)
                     .setContentText(name)
                     .setContentTitle("Incoming Video Call")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_CALL)
                     .addAction(R.drawable.ic_accept_call, "Receive Call", openScreen(NOTIFICATION_ID))
-                    .addAction(R.drawable.ic_decline_call, "Cancel call", null)
+                    .addAction(R.drawable.ic_decline_call, "Cancel call", openScreen(NOTIFICATION_ID))
                     .setAutoCancel(true)
 //                    .setSound(Uri.parse("android.resource://" + reactContext.getApplicationContext().getPackageName() + "/" + R.r))
                     .setFullScreenIntent(openScreen(NOTIFICATION_ID), true);
